@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover">
+  <title>千秋人物</title>
+  <style>
+    @font-face {
+      font-family: "SourceHanSansCN";
+      src: url("txt/SOURCEHANSANSCN-NORMAL.OTF") format("opentype");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "SourceHanSerifLight";
+      src: url("txt/font_01.otf") format("opentype");
+      font-weight: 300;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    ol, ul, menu {
+      padding-inline-start: 0;
+      list-style: none;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: #0e0b08;
+      overflow: hidden;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    span {
+      word-break: break-word;
+    }
+
+    /* 16:9 全屏舞台，内部使用固定 3840×1245 坐标系缩放 */
+    .stage {
+      position: relative;
+      /* 保持 3840:1245 宽高比 = 256:83 ≈ 3.085:1 */
+      width:  min(100vw, calc(100vh * 3840 / 1245));
+      width:  min(100vw, calc(100dvh * 3840 / 1245));
+      height: min(100vh, calc(100vw * 1245 / 3840));
+      height: min(100dvh, calc(100vw * 1245 / 3840));
+      max-width: 100vw;
+      max-height: 100vh;
+      max-height: 100dvh;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    /* 内部容器：固定 3840×1245，通过 scale 缩放适配舞台 */
+    .inner {
+      position: absolute;
+      left: 0; top: 0;
+      width: 3840px;
+      height: 1245px;
+      transform-origin: 0 0;
+    }
+
+    .frame-0_5 {
+      width: 3840px;
+      height: 1245px;
+      overflow: hidden;
+      position: relative;
+      flex-shrink: 0;
+      background-color: rgba(0, 0, 0, 0);
+    }
+
+    .rectangle-0_6 {
+      width: 3840px;
+      height: 1245px;
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      background-size: 100% 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-image: url("assets/images/868b68e0b2501e3f0224f5937c3ff68c2c93878d.png");
+    }
+
+
+    .rectangle-0_7 {
+      width: 4911px;
+      height: 1316px;
+      position: absolute;
+      left: -544px;
+      top: -41px;
+      background-size: 100% 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-image: url("assets/images/cb91cd19b14792bbef4b61a882c2bed3acdcf923.png");
+      animation: cloud-drift 18s ease-in-out infinite;
+    }
+
+    .group-0_8 {
+      width: 3891px;
+      height: 2154px;
+      position: absolute;
+      left: -51px;
+      top: -634px;
+    }
+
+    .rectangle-0_13 {
+      width: 676px;
+      height: 1176px;
+      position: absolute;
+      left: 3211px;
+      top: 715px;
+      background-size: 100% 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-image: url("assets/images/6ef11a788c8e2f18543a6000f6e7470792efc370.png");
+      opacity: 0.41960784792900085;
+      transform-origin: 50% 100%;
+      animation: bamboo-leaf-drift 8s ease-in-out infinite;
+    }
+
+    .group-0_14 {
+      width: 1736px;
+      height: 801px;
+      position: absolute;
+      left: 1997px;
+      top: 1269px;
+    }
+
+    .rectangle-0_25 {
+      width: 1666px;
+      height: 637px;
+      position: absolute;
+      left: 35px;
+      top: 164px;
+      background-size: 100% 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-image: url("assets/images/c18b9b4e9027452be87ceff6cee82820dbe01f5c.png");
+      opacity: 0.7490196228027344;
+    }
+
+    .group-0_26 {
+      width: 1736px;
+      height: 801px;
+      position: absolute;
+      left: 0px;
+      top: 0px;
+    }
+
+    .rectangle-0_28 {
+      width: 1736px;
+      height: 745px;
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      background-size: 100% 100%, 0 0;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-image: url("assets/images/3aa6d7e8d058d75435ebbcad642560c8138960fd.png"), url("assets/images/Mask_0_27.png");
+      opacity: 0.5686274766921997;
+      -webkit-mask-image: url("assets/images/Mask_0_27.png");
+      mask-image: url("assets/images/Mask_0_27.png");
+      -webkit-mask-size: 1666px 637px;
+      mask-size: 1666px 637px;
+      -webkit-mask-position: 35px 164px;
+      mask-position: 35px 164px;
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+    }
+
+    .rectangle-0_15 {
+      width: 1861px;
+      height: 723px;
+      position: absolute;
+      left: 1872px;
+      top: 1431px;
+      background-size: 100% 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-image: url("assets/images/355f3ff9fa7730efadce3707796a2914e7a35627.png");
+      animation: mountain-drift 20s ease-in-out infinite;
+    }
+
+    .rectangle-0_16 {
+      width: 339px;
+      height: 342px;
+      position: absolute;
+      left: 3055px;
+      top: 797px;
+      background-size: 100% 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-image: url("assets/images/1db69360b8fa53ce60ed899210f6755b365ec364.png");
+      transform-origin: center center;
+      animation: sun-pulse 7s ease-in-out infinite;
+    }
+
+    .group-0_17 {
+      width: 1013.4317626953125px;
+      height: 1256.4344482421875px;
+      position: absolute;
+      left: 0px;
+      top: 628.6278076171875px;
+    }
+
+    .group-0_29 {
+      width: 1013.4317626953125px;
+      height: 1256.4344482421875px;
+      position: absolute;
+      left: 0px;
+      top: 0px;
+    }
+
+    .vector-0_32 {
+      width: 1013.4317626953125px;
+      height: 1256.4344482421875px;
+      background-image: url("assets/images/Group_0_32.png");
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      position: absolute;
+      left: 0px;
+      top: 0px;
+    }
+
+    .group-0_30 {
+      width: 777.0030517578125px;
+      height: 1077.998046875px;
+      position: absolute;
+      left: 0px;
+      top: 89.21819305419922px;
+    }
+
+    /* 左侧圆形组：缓慢上下浮动 */
+    @keyframes circle-float {
+      0%   { transform: translateY(0px); }
+      50%  { transform: translateY(-18px); }
+      100% { transform: translateY(0px); }
+    }
+
+    /* 右上角太阳：脉冲缩放 + 轻微浮动 */
+    @keyframes sun-pulse {
+      0%   { transform: scale(1)    translateY(0px);  opacity: 1; }
+      40%  { transform: scale(1.06) translateY(-8px); opacity: 0.85; }
+      100% { transform: scale(1)    translateY(0px);  opacity: 1; }
+    }
+
+    /* 底部山脉：极缓慢横向漂移 */
+    @keyframes mountain-drift {
+      0%   { transform: translateX(0px); }
+      50%  { transform: translateX(-30px); }
+      100% { transform: translateX(0px); }
+    }
+
+    @keyframes bamboo-sway {
+      0%   { transform: rotate(0deg)      translateX(0px); }
+      20%  { transform: rotate(0.8deg)    translateX(4px); }
+      50%  { transform: rotate(-0.6deg)   translateX(-3px); }
+      75%  { transform: rotate(0.4deg)    translateX(2px); }
+      100% { transform: rotate(0deg)      translateX(0px); }
+    }
+
+    @keyframes bamboo-leaf-drift {
+      0%   { transform: rotate(0deg)    translateX(0px); }
+      30%  { transform: rotate(-1deg)   translateX(-5px); }
+      60%  { transform: rotate(0.7deg)  translateX(3px); }
+      100% { transform: rotate(0deg)    translateX(0px); }
+    }
+
+    /* Z字云纹：缓慢左右漂移 */
+    @keyframes cloud-drift {
+      0%   { transform: translateX(0px); }
+      50%  { transform: translateX(60px); }
+      100% { transform: translateX(0px); }
+    }
+
+    .yun-cloud {
+      position: absolute;
+      left: 400px;
+      top: 250px;
+      width: 150px;
+      height: 150px;
+      background-image: url("image/yun.png");
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      opacity: 0.9;
+      pointer-events: none;
+      animation: cloud-drift 14s ease-in-out infinite;
+    }
+
+    .yun-cloud-b {
+      position: absolute;
+      left: 360px;
+      top: 400px;
+      width: 340px;
+      height: 235px;
+      background-image: url("image/yun.png");
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      opacity: 0.9;
+      pointer-events: none;
+      animation: cloud-drift 18s ease-in-out infinite reverse;
+    }
+
+    .yun-cloud-mountain {
+      position: absolute;
+      left: 2850px;
+      top: 850px;
+      width: 400px;
+      height: 300px;
+      background-image: url("image/yun.png");
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      opacity: 0.9;
+      pointer-events: none;
+      animation: cloud-drift 16s ease-in-out infinite;
+    }
+
+
+    .vector-0_38 {
+      width: 777.0030517578125px;
+      height: 1077.9979858398438px;
+      background-image: url("assets/images/Group_0_38.png");
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      transform-origin: 50% 100%;
+    }
+
+    .group-0_31 {
+      width: 1013.4317626953125px;
+      height: 1256.4344482421875px;
+      position: absolute;
+      left: 0px;
+      top: 0px;
+    }
+
+    .vector-0_41 {
+      width: 1013.4317626953125px;
+      height: 1256.4344482421875px;
+      background-image: url("assets/images/Group_0_41.png");
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      position: absolute;
+      left: 0px;
+      top: 0px;
+    }
+
+    .vector-0_18 {
+      width: 398.1845703125px;
+      height: 667.142822265625px;
+      background-image: url("assets/images/Boolean_operation_0_18.png");
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      position: absolute;
+      left: 222.99530029296875px;
+      top: 922.999755859375px;
+    }
+
+    .group-0_19 {
+      width: 346.0500183105469px;
+      height: 815.96142578125px;
+      position: absolute;
+      left: 152.28298950195312px;
+      top: 783.7774658203125px;
+      opacity: 0.7490196228027344;
+    }
+
+    .paragraph-0_55 {
+      font-size: 229.1666717529297px;
+      font-family: "Wyue-GutiFangsong-Regular", "STSong", "SimSun", serif;
+      font-weight: normal;
+      line-height: 401.04168701171875px;
+      color: rgba(234, 227, 213, 1);
+      width: auto;
+      height: auto;
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      white-space: pre;
+      flex-grow: 0;
+    }
+
+    .paragraph-0_56 {
+      font-size: 125px;
+      font-family: "Wyue-GutiFangsong-Regular", "STSong", "SimSun", serif;
+      font-weight: normal;
+      line-height: 218.75px;
+      color: rgba(234, 227, 213, 1);
+      width: auto;
+      height: auto;
+      position: absolute;
+      left: 80.04999542236328px;
+      top: 279.8764953613281px;
+      white-space: pre;
+      flex-grow: 0;
+    }
+
+    .paragraph-0_57 {
+      font-size: 216.6666717529297px;
+      font-family: "Wyue-GutiFangsong-Regular", "STSong", "SimSun", serif;
+      font-weight: normal;
+      line-height: 379.16668701171875px;
+      color: rgba(234, 227, 213, 1);
+      width: auto;
+      height: auto;
+      position: absolute;
+      left: 129.04998779296875px;
+      top: 262.7015075683594px;
+      white-space: pre;
+      flex-grow: 0;
+    }
+
+    .paragraph-0_58 {
+      font-size: 168.52793884277344px;
+      font-family: "Wyue-GutiFangsong-Regular", "STSong", "SimSun", serif;
+      font-weight: normal;
+      line-height: 294.92388916015625px;
+      color: rgba(234, 227, 213, 1);
+      width: auto;
+      height: auto;
+      position: absolute;
+      left: 91.20500946044922px;
+      top: 520.96142578125px;
+      white-space: pre;
+      flex-grow: 0;
+    }
+
+    /* ── 竖排名字区域 ── */
+    /* 本籍行：原始坐标 left:1121 top:772，在 group-0_8 内 */
+    .names-row-benjí {
+      position: absolute;
+      left: 1121px;
+      top: 772px;
+      width: 1938px;
+      height: 196px;
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+    }
+
+    /* 客籍行：原始坐标 left:1121 top:1272，在 group-0_8 内 */
+    .names-row-keji {
+      position: absolute;
+      left: 1121px;
+      top: 1272px;
+      width: 1543px;
+      height: 196px;
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+    }
+
+    /* 本籍/客籍 标签列 */
+    .names-label {
+      width: 196px;
+      height: 196px;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    /* 标签背景圆图 */
+    .names-label-icon {
+      width: 196px;
+      height: 196px;
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    /* "本籍" / "客籍" 文字：竖排居中在圆框内 */
+    .names-label-text {
+      font-size: 42px;
+      font-family: "MaoKenWangYanBoSong-S-Regular", "STSong", "SimSun", serif;
+      font-weight: normal;
+      letter-spacing: 8px;
+      color: rgba(169, 139, 98, 1);
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      white-space: nowrap;
+    }
+
+    /* 名字列表：每个名字一列竖排 */
+    .names-list {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      height: 196px;
+    }
+
+    /* 单个名字单元：圆点图标 + 竖排文字 */
+    .name-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 196px;
+      height: 196px;
+      flex-shrink: 0;
+    }
+
+    /* 圆点装饰图标 */
+    .name-dot {
+      width: 60px;
+      height: 60px;
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      flex-shrink: 0;
+      margin-top: 31px;
+      margin-bottom: 10px;
+    }
+
+    /* 竖排人名 */
+    .name-text {
+      font-size: 58px;
+      font-family: "STKaiti", "KaiTi", "STSong", "SimSun", serif;
+      font-weight: normal;
+      color: rgba(169, 139, 98, 1);
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      letter-spacing: 6px;
+      line-height: 1.75;
+      white-space: nowrap;
+    }
+
+    /* 分隔线：原始坐标 left:1341 top:1227，在 group-0_8 内 */
+    .rectangle-0_22 {
+      width: 1600px;
+      height: 2px;
+      position: absolute;
+      left: 1341px;
+      top: 1227px;
+      background-color: rgba(169, 139, 98, 1);
+    }
+
+    .rectangle-0_23 {
+      width: 3840px;
+      height: 30px;
+      position: absolute;
+      left: 51px;
+      top: 634px;
+      background-color: rgba(177, 148, 111, 1);
+    }
+
+    .rectangle-0_24 {
+      width: 3840px;
+      height: 30px;
+      position: absolute;
+      left: 51px;
+      top: 1849px;
+      background-color: rgba(177, 148, 111, 1);
+    }
+  </style>
+  <style>
+    .payment-watermark {
+      /* 锚定当前画布（舞台）右下角 */
+      position: absolute;
+      right: max(24px, env(safe-area-inset-right, 0px));
+      bottom: max(24px, env(safe-area-inset-bottom, 0px));
+      margin: 0;
+      z-index: 2147483647;
+      pointer-events: none;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      font-size: 80px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: rgba(255, 70, 70, 0.22);
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
+      user-select: none;
+      -webkit-user-select: none;
+
+    }
+  </style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <div class="payment-watermark" aria-hidden="true">demo</div>
+  <div class="inner" id="inner">
+    <div id="0_5" class="frame-0_5">
+      <div id="0_6" class="rectangle-0_6"></div>
+      <div id="0_7" class="rectangle-0_7"></div>
+      <div id="0_8" class="group-0_8">
+        <div id="0_13" class="rectangle-0_13"></div>
+        <div id="0_14" class="group-0_14">
+          <div id="0_25" class="rectangle-0_25"></div>
+          <div id="0_26" class="group-0_26">
+            <div id="0_28" class="rectangle-0_28"></div>
+          </div>
+        </div>
+        <div id="0_15" class="rectangle-0_15"></div>
+        <div id="0_16" class="rectangle-0_16"></div>
+        <div id="0_17" class="group-0_17">
+          <div id="0_29" class="group-0_29">
+            <div id="0_32" class="vector-0_32"></div>
+          </div>
+          <div id="0_30" class="group-0_30">
+            <div id="0_38" class="vector-0_38"></div>
+          </div>
+          <div id="0_31" class="group-0_31">
+            <div id="0_41" class="vector-0_41"></div>
+          </div>
+        </div>
+        <div id="0_18" class="vector-0_18"></div>
+        <div id="0_19" class="group-0_19">
+          <p id="0_55" class="paragraph-0_55">千</p>
+          <p id="0_56" class="paragraph-0_56">秋</p>
+          <p id="0_57" class="paragraph-0_57">人</p>
+          <p id="0_58" class="paragraph-0_58">物</p>
+        </div>
+        <!-- 本籍行：left:1121 top:772 -->
+        <div class="names-row-benjí">
+          <div class="names-label">
+            <div class="names-label-icon" style="background-image:url('assets/images/Boolean_operation_0_59.png')"></div>
+            <div class="names-label-text">本籍</div>
+          </div>
+          <div class="names-list">
+            <div class="name-item" data-name="阡能" onclick="openPopup('阡能')">
+              <div class="name-dot" style="background-image:url('assets/images/Boolean_operation_0_61.png')"></div>
+              <span class="name-text">阡能</span>
+            </div>
+            <div class="name-item" data-name="计有功" onclick="openPopup('计有功')">
+              <div class="name-dot" style="background-image:url('assets/images/Boolean_operation_0_63.png')"></div>
+              <span class="name-text">计有功</span>
+            </div>
+            <div class="name-item" data-name="岳春" onclick="openPopup('岳春')">
+              <div class="name-dot" style="background-image:url('assets/images/Boolean_operation_0_65.png')"></div>
+              <span class="name-text">岳春</span>
+            </div>
+            <div class="name-item" data-name="伍肇龄" onclick="openPopup('伍肇龄')">
+              <div class="name-dot" style="background-image:url('assets/images/Boolean_operation_0_67.png')"></div>
+              <span class="name-text">伍肇龄</span>
+            </div>
+            <div class="name-item" data-name="冷融" onclick="openPopup('冷融')">
+              <div class="name-dot" style="background-image:url('assets/images/Boolean_operation_0_69.png')"></div>
+              <span class="name-text">冷融</span>
+            </div>
+            <div class="name-item" data-name="杨歗谷" onclick="openPopup('杨歗谷')">
+              <div class="name-dot" style="background-image:url('assets/images/Boolean_operation_0_71.png')"></div>
+              <span class="name-text">杨歗谷</span>
+            </div>
+            <div class="name-item" data-name="叶心清" onclick="openPopup('叶心清')">
+              <div class="name-dot" style="background-image:url('assets/images/Boolean_operation_0_73.png')"></div>
+              <span class="name-text">叶心清</span>
+            </div>
+            <div class="name-item" data-name="冷寅东" onclick="openPopup('冷寅东')">
+              <div class="name-dot" style="background-image:url('assets/images/Boolean_operation_0_75.png')"></div>
+              <span class="name-text">冷寅东</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 分隔线：left:1341 top:1227 -->
+        <div id="0_22" class="rectangle-0_22"></div>
+
+        <!-- 客籍行：left:1121 top:1272 -->
+        <div class="names-row-keji">
+          <div class="names-label">
+            <div class="names-label-icon" style="background-image:url('assets/images/Boolean_operation_0_96.png')"></div>
+            <div class="names-label-text">客籍</div>
+          </div>
+          <div class="names-list">
+            <div class="name-item" data-name="张陵" onclick="openPopup('张陵')">
+              <div class="name-dot" style="background-image:url('assets/images/Boolean_operation_0_98.png')"></div>
+              <span class="name-text">张陵</span>
+            </div>
+            <div class="name-item" data-name="杜甫" onclick="openPopup('杜甫')">
+              <div class="name-dot" style="background-image:url('assets/images/Boolean_operation_0_100.png')"></div>
+              <span class="name-text">杜甫</span>
+            </div>
+            <div class="name-item" data-name="文同" onclick="openPopup('文同')">
+              <div class="name-dot" style="background-image:url('assets/images/Boolean_operation_0_102.png')"></div>
+              <span class="name-text">文同</span>
+            </div>
+            <div class="name-item" data-name="陆游" onclick="openPopup('陆游')">
+              <div class="name-dot" style="background-image:url('assets/images/Boolean_operation_0_104.png')"></div>
+              <span class="name-text">陆游</span>
+            </div>
+            <div class="name-item" data-name="张三丰" onclick="openPopup('张三丰')">
+              <div class="name-dot" style="background-image:url('assets/images/Boolean_operation_0_106.png')"></div>
+              <span class="name-text">张三丰</span>
+            </div>
+            <div class="name-item" data-name="宋载" onclick="openPopup('宋载')">
+              <div class="name-dot" style="background-image:url('assets/images/Boolean_operation_0_108.png')"></div>
+              <span class="name-text">宋载</span>
+            </div>
+          </div>
+        </div>
+        <div id="0_23" class="rectangle-0_23"></div>
+        <div id="0_24" class="rectangle-0_24"></div>
+      </div>
+      <!-- 祥云装饰层 -->
+      <div class="yun-cloud"></div>
+      <div class="yun-cloud-b"></div>
+      <div class="yun-cloud-mountain"></div>
+    </div>
+
+    <!-- ══ 弹窗：与主画面同坐标系，globalLeft:-227 globalTop:-86 ══ -->
+    <!-- hidden by default, shown via JS -->
+    <!-- 弹窗：position 在 inner 坐标系内，globalLeft:-227 globalTop:-86 -->
+    <!-- 弹窗背景：打开弹窗时替换整个 inner 背景 -->
+    <div id="popup-bg" style="display:none; position:absolute; left:0; top:0; width:3840px; height:1245px;
+         background:url('image/bg.png') no-repeat center center; background-size:cover; z-index:48;"></div>
+
+    <div id="popup-layer" style="display:none; position:absolute; left:0; top:0; width:3840px; height:1245px; z-index:50; pointer-events:auto;">
+
+      <!-- 卷轴背景图：根据类型切换 bj/kj/tx -->
+      <img id="popup-scroll-bg" src="" alt=""
+           style="position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;pointer-events:none;">
+
+      <!-- 人名标题 -->
+      <div id="popup-name" style="position:absolute;left:1162px;top:390px;
+           width:auto;height:102px;
+           font-size:58px;font-family:'STKaiti','KaiTi','STSong',serif;
+           color:rgba(169,139,98,1);letter-spacing:40px;line-height:102px;
+           white-space:nowrap;overflow:visible;"></div>
+
+      <!-- 正文可滚动区域 -->
+      <div style="position:absolute;left:1162px;top:523px;width:2050px;height:287px;overflow:hidden;">
+        <div id="popup-body-scroll" style="width:100%;height:100%;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(169,139,98,0.6) transparent;">
+          <div id="popup-body" style="font-size:29px;color:rgb(70, 65, 60);line-height:51px;"></div>
+        </div>
+      </div>
+
+      <!-- 头像（有头像时显示，覆盖在左侧花朵圆形区域） -->
+      <div id="popup-avatar-wrap" style="display:none; position:absolute;
+           left:233px; top:264px; width:720px; height:718px;
+           -webkit-mask-image:url('assets/images/Vector_0_427.png');
+           mask-image:url('assets/images/Vector_0_427.png');
+           -webkit-mask-size:100% 100%; mask-size:100% 100%;
+           -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
+           overflow:hidden;">
+        <img id="popup-avatar" alt=""
+             style="width:100%; height:100%; object-fit:cover; object-position:center top;
+                    opacity:0.95; filter:sepia(20%) contrast(1.05) brightness(0.98);">
+      </div>
+
+      <!-- 返回按钮 -->
+      <div onclick="closePopup()" style="position:absolute;left:2897px;top:810px;
+           width:225px;height:70px;cursor:pointer;">
+        <div style="position:absolute;inset:0;
+                    background:url('assets/images/Boolean_operation_0_323.png') no-repeat;
+                    background-size:100% 100%;"></div>
+        <div style="position:absolute;inset:4px;
+                    background:url('assets/images/Vector_0_324.png') no-repeat center;
+                    background-size:100% 100%;"></div>
+        <span style="position:absolute;left:0;top:0;width:100%;height:100%;
+              display:flex;align-items:center;justify-content:center;
+              font-size:36px;font-family:'STKaiti','KaiTi',serif;color:rgba(255,255,255,1);
+              letter-spacing:16px;">返回</span>
+      </div>
+
+    </div><!-- /popup-layer -->
+  </div><!-- /inner -->
+</div><!-- /stage -->
+
+<audio id="bgm" src="MP3/audio_01.mp3" autoplay loop preload="auto"></audio>
+
+<style>
+  /* 人物详情正文：思源宋体 Light（本地 OTF） */
+  #popup-body {
+    font-family: "SourceHanSerifLight", "STSong", "SimSun", serif;
+    color: rgb(70, 65, 60);
+  }
+
+  #popup-body-scroll::-webkit-scrollbar { width: 8px; }
+  #popup-body-scroll::-webkit-scrollbar-track { background: transparent; }
+  #popup-body-scroll::-webkit-scrollbar-thumb {
+    background: rgba(169,139,98,0.5);
+    border-radius: 4px;
+  }
+  #popup-body-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(169,139,98,0.85);
+  }
+  #popup-body p { margin-bottom: 12px; text-indent: 2em; }
+  #popup-body .intro-note { font-size: 27px; line-height: 1.65; color: rgb(70, 65, 60); margin-top: 0.35em; text-indent: 2em; }
+  /* 古诗词区块：仅标题/小标题/诗句居中，正文段落仍为左对齐首行缩进 */
+  #popup-body .poem-title,
+  #popup-body .poem-sub,
+  #popup-body .poem-line {
+    text-align: center;
+  }
+  /* 诗词：仅标题主名加粗；末尾「（朝代 作者）」不加粗 */
+  #popup-body .poem-title {
+    font-size: 33px;
+    font-weight: normal;
+    margin-top: 20px;
+    text-indent: 0;
+  }
+  #popup-body .poem-title .poem-title-main { font-weight: bold; }
+  #popup-body .poem-title .poem-title-meta { font-weight: normal; }
+  #popup-body .poem-sub {
+    font-size: 29px;
+    font-weight: normal;
+    color: rgb(70, 65, 60);
+    margin-bottom: 4px;
+    text-indent: 0;
+  }
+  #popup-body .poem-line {
+    font-size: 29px;
+    font-weight: normal;
+    color: rgb(70, 65, 60);
+    text-indent: 0;
+  }
+  .name-item { cursor: pointer; }
+  .name-item:hover .name-text { color: rgba(120,80,30,1); }
+
+  @keyframes popup-fadein {
+    from { opacity:0; } to { opacity:1; }
+  }
+  #popup-layer.show { animation: popup-fadein 0.25s ease-out; }
+</style>
+
+<script>
+(function () {
+  var stage = document.getElementById('stage');
+  var inner = document.getElementById('inner');
+  var bgm = document.getElementById('bgm');
+  if (bgm) bgm.volume = 0.2;
+  var DESIGN_W = 3840;
+  var DESIGN_H = 1245;
+
+  function resize() {
+    var sw = stage.clientWidth;
+    var sh = stage.clientHeight;
+    var scale = Math.min(sw / DESIGN_W, sh / DESIGN_H);
+    inner.style.transform = 'scale(' + scale + ')';
+    inner.style.left = ((sw - DESIGN_W * scale) / 2) + 'px';
+    inner.style.top  = ((sh - DESIGN_H * scale) / 2) + 'px';
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // 默认自动播放；若被浏览器策略拦截，则在首次用户交互后补播
+  function tryPlayBgm() {
+    if (!bgm) return;
+    var playPromise = bgm.play();
+    if (playPromise && typeof playPromise.catch === 'function') {
+      playPromise.catch(function () {});
+    }
+  }
+  tryPlayBgm();
+  ['pointerdown', 'keydown', 'touchstart'].forEach(function (evt) {
+    document.addEventListener(evt, tryPlayBgm, { once: true });
+  });
+
+  /* ── 人物数据 ── */
+  var PEOPLE = {
+    '阡能':  { category:'本籍', intro:'<p>阡能（？～882年），大邑安仁（原邛州安仁县）人，唐末农民起义军首领。唐中和二年（882年）三月，阡能因不满朝廷沉疴，聚众起义，活动于邛、雅二州。起义军在阡能统率下，迅速发展壮大，官军屡战屡败。同年十一月，唐军将领高仁厚使用“剿抚”手段，分化和打击起义军。在战斗中，阡能、罗浑擎等起义军主要领导人先后被杀，起义宣告失败。阡能的起义，在西川点燃了打击李唐王朝的第一把火，引发各地义军竞起，对李唐统治给予了沉重打击。</p>' },
+    '计有功': { category:'本籍', intro:'<p>计有功，大邑安仁（原邛州安仁县）人，名敏夫，号灌园居士，计用章之孙，生于元祐年间（1086～1093年），大观年间（1107～1110年）进士，南宋文学家。计有功晚年将收集的唐诗资料编辑成巨著《唐诗纪事》，共81卷，被《四库全书》收于集部诗文评类，对保存我国优秀文化作出了巨大贡献。</p><p class="intro-note">注：计用章，宋天禧三年（1019年）己未科进士。其子计良辅（计有功之父），为绍兴元年（1131年）辛亥科进士。故有“一门三进士”之说。</p>' },
+    '岳春':  { category:'本籍', avatar:'image/image_01.png', intro:'<p>岳春，原名乐春，字雪吟，又名春阳，生于清道光年间，大邑县城北乐家坝人。中年入梨园学艺，川剧的“昆、高、胡、弹、灯”五匹齐美，造诣精湛，是清末民初川剧界的著名丑角，被称为“戏中状元”。乐春擅长表演功夫戏，并创造了“矮子身法”，对川剧表演程式进行革新、改造，创造出曹操脸谱12种。其代表作品有《渔父赠剑》《赠绨袍》《做文章》《坠马》《秋江》《活捉三郎》《御河桥》等。</p>' },
+    '伍肇龄': { category:'本籍', intro:'<p>伍肇龄（1829～1915年），字嵩生（一作崧生），大邑䢺江镇钱沟人，12岁考上秀才，15岁中举。道光二十七年（1847年）丁未科进士，时年18岁，入翰林院散馆任编修，人称“伍翰林”。曾任光绪皇帝的老师，又名“太师”。清咸丰十一年（1861年），因其为肃顺座上客而被株连，削籍为民。伍嵩生回乡后，先后在邛崃书院、成都潜溪书院、锦江书院、尊经书院讲学。1910年，四川总督府拨款，伍嵩生领衔修复成都名胜望江楼。清宣统三年五月（1911年6月），伍嵩生参加四川保路同志会组织的请愿，并走在前列。伍嵩生著作现仅存《石室诗钞》一书。</p>' },
+    '冷融':  { category:'本籍', intro:'<p>冷融（1895～1943年），字杰生，大邑灌口场（今悦来镇）人。1921年到日本明治大学攻读政治经济科，1924年毕业回乡。先后担任过邛州县立联合中学校长、四川军务帮办公署驻渝代表、二十四军驻南京代表、蒙藏委员会常委、四川省政府委员兼民政厅长。他先后捐钱在灌口场、王泗、新场、䢺江修建完全小学。1928年，他参与倡导创办大邑第一所中学。</p>' },
+    '杨歗谷': { category:'本籍', avatar:'image/image_03.png', intro:'<p>杨歗谷（1885～1969年）又作“杨啸谷”，又名虓（xiao），大邑晋原街道凤凰村人。清末毕业于四川武备学堂，在日本游历回国后从事收藏与考古，担任过北京京华美专教授、国立北京艺术专科学校专职教员兼图书馆主任。著有《东瀛考古记》《古月轩瓷考》《东方陶瓷史》《大同云冈石佛考》。1941年在《立言画刊》连载《碑帖刻人姓名考》。杨歗谷年老回川，自号竹扉老人，受聘在华西协合大学教授考古学和中国美术史。新中国成立后，先后担任四川省博物馆、四川省文史馆研究员。</p>' },
+    '叶心清': { category:'本籍', avatar:'image/image_05.png', intro:'<p>叶心清（1908～1969年），又名枝富，大邑韩场人。7岁入学，后拜师名医魏廷兰。他医术高绝，善用金针治疗疾病，被誉为东方神医，曾为党和国家领导人刘少奇、周恩来、朱德、陈毅、彭德怀、聂荣臻、李富春、邓子恢、蔡畅等进行医疗保健，多次被派出国为其他国家领导人治病。1964年获越南政府友谊勋章。他曾担任重庆市第一届人民代表大会代表、全国政协第四届委员会委员。</p>' },
+    '冷寅东': { category:'本籍', intro:'<p>冷寅东（1894～1982年），又名庭桂，字薰南，大邑灌口场（今悦来镇）人。清宣统三年（1911年）夏，四川保路同志会成立，冷寅东经同盟会会员朱之宏、曹权实介绍参加革命活动。推翻清王朝后，冷寅东进入四川军政府办的陆军军官学校，成为第一期学员。先后参加讨袁（世凯）战争、护国战争和护法战争，后成为刘文辉部将。1949年4月，冷寅东被任命为成都市长。1949年12月25日，他率领人员起义。解放后，冷寅东历任川西区各界人民代表会议代表、川西行署委员、四川省政府委员兼江津区副专员、四川省政协常委、全国政协第五届委员。</p>' },
+    '张陵': { category:'客籍', avatar:'image/image_06.jpg', intro:'<p>张陵（34～156年），又名张道陵，字辅汉，汉留侯张良的八世孙，沛国丰（今江苏省丰县）人。因创立道教，道徒尊称为张道陵。张道陵于东汉顺帝时来到大邑鹤鸣山修道。东汉永和六年（141年）作道书24篇，在鹤鸣山创立道派，奉李耳为教主，为道教之始。入道者要出五斗米，故称五斗米道。道徒尊称他为天师，故道教又称天师道。他把人们组织起来，划分为24个教区，即24治。教区内废除官吏，设祭酒管理政教事务，用《道德经》教化民众，废除刑罚，让有过错的人修桥补路。规定祭祀不用酒肉，还设立义舍义仓，救济路人与贫苦道友。</p>' },
+    '杜甫':  { category:'客籍', avatar:'image/image_07.jpg', intro:'<p>杜甫（712～770年），字子美，自号少陵野老，唐代著名诗人，被后人誉为“诗圣”。唐乾元二年（759年）冬天，杜甫为避“安史之乱”，携家带口由陇右（今甘肃省南部）入蜀辗转来到成都。在成都期间，杜甫创作240余首诗，其中有多首诗咏赞大邑以及西岭雪山，如《绝句》《咏大邑瓷器》等。</p><p class="poem-title">绝句（唐  杜甫）</p><p class="poem-line">两个黄鹂鸣翠柳，一行白鹭上青天；窗含西岭千秋雪，门泊东吴万里船。</p>' },
+    '文同':  { category:'客籍', avatar:'image/image_08.png', intro:'<p>文同（1018～1079年），字与可，号笑笑居士、笑笑先生，人称石室先生。梓州梓潼郡永泰县（今绵阳市盐亭县）人。北宋官员，著名画家、诗人。他曾代理大邑县令，足迹遍至鹤鸣山、雾中山、高堂山、飞凤山等，留下诗文，曾赋《高堂山兜率寺》《题兜率寺》《题雾中山碧玉潭》等诗。</p><p class="poem-title">县楼独酌（北宋 文同）</p><p class="poem-line">向晚无公事，身如太古闲。县楼明夕照，樽酒对南山。</p><p class="poem-line">放意利名外，游心天地间。生来不能饮，到此学酡颜。</p><p class="poem-title">题凤凰山后岩（北宋 文同）</p><p class="poem-line">此景又奇绝，半空生曲栏。蜀尘随眼断，蕃雪满襟寒。</p><p class="poem-line">涧下雨声急，岩头云色乾。归鞍休报晚，吾待且盘桓。</p>' },
+    '陆游':  { category:'客籍', avatar:'image/image_09.png', intro:'<p>陆游（1125～1210年），字务观，号放翁，越州山阴（今浙江省绍兴市）人，南宋时期文学家、史学家、爱国诗人。陆游在成都、蜀州（今崇州市）居住期间，曾两次来大邑，留下诗词18首，如《题平云亭》《高秋亭》《夜宿鹄鸣山》《九日试雾中僧所赠茶》《九月三日同吕周辅教授游大邑诸山》等。</p><p class="poem-title">题平云亭（南宋 陆游）</p><p class="poem-line">满榼香醪何处倾，金鳌背上得同行。天垂绿野三边尽，云与朱阑一样平。</p><p class="poem-line">烟树微茫疑误墨，风松萧瑟有新声。黄花未吐无多恨，也胜湘累拾落英。</p><p class="poem-title">高秋亭（南宋 陆游）</p><p class="poem-line">三日山中醉复醒，径归回首愧山灵。从今借取观书眼，长看天西万叠青。</p><p class="poem-title">安仁道中二首（南宋 陆游）</p><p class="poem-sub">其一</p><p class="poem-line">千古临邛路，飘然独偶游。病身那迫老，远客更禁秋。</p><p class="poem-line">水退桥未葺，渡闲船自流。飞腾付年少，回首思悠悠。</p><p class="poem-sub">其二</p><p class="poem-line">三驿未为远，衰翁愁出门。食程多卒卒，失睡每昏昏。</p><p class="poem-line">天大围平野，江回隔近村。何时有余俸，小筑占云根。</p><p class="poem-title">夜宿鹄鸣山（南宋 陆游）</p><p class="poem-line">西游万里已关天，采药名山亦宿缘。老柏干霄如许寿，幽花泣露为谁妍。</p><p class="poem-line">苔黏石磴扪萝上，灯耿云房扫榻眠。安得仙翁索米术，一生留此弄寒泉。</p>' },
+    '张三丰': { category:'客籍', avatar:'image/image_10.png', intro:'<p>张三丰，名君实，又名全一，号昆阳、元元，因不修边幅，又号张邋遢。元末明初著名道士，武当道派的实际开创者，又是气功大师和武术名家。明洪武二十五年（1392年），入蜀慕其祖道陵得道之所，来大邑县鹤鸣山入天谷洞炼丹。至洪武末（1398年），又先后来此两次，留有鹤鸣山、天谷洞等诗。</p><p class="poem-title">鹤鸣山二首（明 张三丰）</p><p class="poem-line">（其一）沽酒临邛入翠微，穿崖客负白云归。逍遥廿四神仙洞，石鹤欣然啸欲飞。</p><p class="poem-line">（其二）道士来时石鹤鸣，飞神天谷署长生。只今两涧潺湲水，助我龙吟虎啸声。</p>' },
+    '宋载':  { category:'客籍', intro:'<p>宋载，字大舟，号西瑜，浙江建德人，拔贡。清乾隆十一年（1746年）任大邑县知县。宋载上任后，遍寻大邑旧志无所获，于是决心新编《大邑县志》。历经6年，成书4卷，并为“大邑古八景”写诗作赋。宋载纂修的《大邑县志》是大邑现存最早的志书，为大邑留下了宝贵的历史文化财富。</p><p class="poem-title">晋原八景（清 宋载）</p><p class="poem-sub">（凤凰鲸柏）</p><p class="poem-line">紫柏森森不计年，凤凰遥度暮山烟。公余拾翠因相问，几辈骑鲸得上天。</p><p class="poem-sub">（虎跳泏河）</p><p class="poem-line">跳波谁把迹曾留，泏水闲寻虎渡头。暇日到来吟兴远，一鞭人影暮烟秋。</p><p class="poem-sub">（雾中山月池）</p><p class="poem-line">明月何年入此池，四围山色影琉璃。飞觞怕阻诗人兴，莫怪嫦娥出浴迟。</p><p class="poem-sub">（鹤鸣双涧）</p><p class="poem-line">雨涧泉流不断声，泠泠潄玉耳边清。我来何处寻仙迹，夜静山空双鹤鸣。</p><p class="poem-sub">（斜江晚渡）</p><p class="poem-line">一湾春水漾前川，晚渡无人半系船。却向斜江见图画，渔家多处绿杨烟。</p><p class="poem-sub">（洞口烟霞）</p><p class="poem-line">人家几处抱清流，洞口风花香暗浮。水浸霞红烟带绿，诗囊添得宦中游。</p><p class="poem-sub">（甘泉笻竹）</p><p class="poem-line">槭槭微风缕缕烟，幽篁次第溯甘泉。昔经汉使遗栽后，曾说新枝与岁迁。</p><p class="poem-sub">（高堂圣灯）</p><p class="poem-line">旧是传灯佛子宫，一山高耸燄熊熊。夜来取次凭虚望，误认明星荡碧空。</p>' }
+  };
+
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  /** 诗题末尾全角括号内为副题，不加粗；无匹配则整题加粗 */
+  function formatPoemTitles(bodyEl) {
+    if (!bodyEl) return;
+    var nodes = bodyEl.querySelectorAll('.poem-title');
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i];
+      var text = el.textContent.replace(/\s+$/, '').trim();
+      var m = text.match(/^(.+?)（([^）]+)）$/);
+      if (m) {
+        el.innerHTML =
+          '<span class="poem-title-main">' +
+          escapeHtml(m[1]) +
+          '</span><span class="poem-title-meta">（' +
+          escapeHtml(m[2]) +
+          '）</span>';
+      } else {
+        el.innerHTML = '<span class="poem-title-main">' + escapeHtml(text) + '</span>';
+      }
+    }
+  }
+
+  function setMainVisible(visible) {
+    var frame = document.getElementById('0_5');
+    var bg    = document.getElementById('popup-bg');
+    if (visible) {
+      frame.style.display = '';
+      bg.style.display    = 'none';
+    } else {
+      frame.style.display = 'none';
+      bg.style.display    = 'block';
+    }
+  }
+
+  window.openPopup = function (name) {
+    var data = PEOPLE[name];
+    if (!data) return;
+
+    document.getElementById('popup-name').textContent = name;
+    var bodyEl = document.getElementById('popup-body');
+    bodyEl.innerHTML = data.intro;
+    formatPoemTitles(bodyEl);
+
+    var avatarWrap = document.getElementById('popup-avatar-wrap');
+    var avatar     = document.getElementById('popup-avatar');
+    var scrollBg   = document.getElementById('popup-scroll-bg');
+
+    // 选择背景图：有头像用 tx.png，无头像本籍用 bj.png，无头像客籍用 kj.png
+    if (data.avatar) {
+      scrollBg.src = 'image/tx.png';
+      avatar.alt = name + '头像';
+      avatar.src = data.avatar;
+      avatar.onerror = function () { avatarWrap.style.display = 'none'; };
+      avatarWrap.style.display = 'block';
+    } else {
+      scrollBg.src = data.category === '本籍' ? 'image/bj.png' : 'image/kj.png';
+      avatar.removeAttribute('src');
+      avatarWrap.style.display = 'none';
+    }
+
+    document.getElementById('popup-body-scroll').scrollTop = 0;
+    setMainVisible(false);
+    var layer = document.getElementById('popup-layer');
+    layer.style.display = 'block';
+    layer.classList.remove('show');
+    void layer.offsetWidth;
+    layer.classList.add('show');
+  };
+
+  window.closePopup = function () {
+    document.getElementById('popup-layer').style.display = 'none';
+    setMainVisible(true);
+  };
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closePopup();
+  });
+})();
+</script>
+</body>
+</html>
